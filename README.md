@@ -25,55 +25,13 @@ A civic information agent for Grambling, Louisiana. Every Monday morning it scra
 
 ## Quick Start
 
-### 1. Install dependencies
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Configure environment
-
-```bash
-cp .env.example .env
-# Edit .env and fill in your API keys
-```
-
-**Required credentials:**
-
-| Variable                    | Where to get it                                           |
-| --------------------------- | --------------------------------------------------------- |
-| `OPENAI_API_KEY`            | [platform.openai.com](https://platform.openai.com)        |
-| `TWILIO_ACCOUNT_SID`        | [console.twilio.com](https://console.twilio.com)          |
-| `TWILIO_AUTH_TOKEN`         | [console.twilio.com](https://console.twilio.com)          |
-| `TWILIO_PHONE_NUMBER`       | Buy a number in your Twilio console                       |
-| `SUPABASE_URL`              | [supabase.com](https://supabase.com) project API settings |
-| `SUPABASE_SERVICE_ROLE_KEY` | [supabase.com](https://supabase.com) project API settings |
-
-**Supabase schema (run once in SQL editor):**
-
-```sql
-create table if not exists public.users (
-  phone text primary key,
-  subscribed boolean not null default true,
-  created_at timestamptz not null default now()
-);
-
-alter table if exists public.users
-  drop column if exists name;
-
-create table if not exists public.conversations (
-  id bigint generated always as identity primary key,
-  phone text not null references public.users(phone) on delete cascade,
-  role text not null check (role in ('user', 'assistant')),
-  content text not null,
-  created_at timestamptz not null default now()
-);
-
-create index if not exists idx_conversations_phone on public.conversations(phone);
-create index if not exists idx_conversations_created_at on public.conversations(created_at);
-```
-
-### 3. Run
+### Run
 
 ```bash
 npm start
@@ -81,20 +39,7 @@ npm start
 
 The server starts on port 3000 and schedules the Monday digest automatically.
 
-## Twilio Webhook Setup
-
-1. Buy a Twilio phone number (SMS-capable)
-2. Expose your server publicly — for local dev use [ngrok](https://ngrok.com):
-   ```bash
-   ngrok http 3000
-   ```
-3. In your Twilio console → Phone Numbers → your number → Messaging:
-   - Set **"A message comes in"** webhook to:
-     `https://your-ngrok-url.ngrok.io/sms`
-   - Method: `HTTP POST`
-4. Set `WEBHOOK_URL=https://your-ngrok-url.ngrok.io` in `.env`
-
-## Facebook Graph API (optional)
+## Facebook Graph API
 
 The Facebook scraper is disabled by default because Facebook requires auth.
 To enable it:
