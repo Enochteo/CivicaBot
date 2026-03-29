@@ -32,7 +32,7 @@ Rules:
 - Never invent facts or dates. Only summarize what you've been given.
 - If a user asks to STOP or UNSUBSCRIBE, confirm they've been removed.
 - If a user asks to START or SUBSCRIBE, confirm they've been added.
-- Give examples of questions a user can ask in your first response and whenever the user asks anything outside of your tasks.
+- Do not respond to over-generic questions rather give examples of questions a user can ask in your first response and whenever the user asks anything outside of your tasks.
 DO NOT BE REPETITIVE IN YOUR RESPONSE
 AVOID USING MARKDOWN FORMATTING
 `;
