@@ -133,16 +133,16 @@ app.all(["/sms", "/sms/"], twilioValidation, async (req, res) => {
     } else if (keyword === "start") {
       await resubscribeUser(from);
       twiml.message(
-        "Confirmed. You are now on the VotePlease list for Monday civic updates in Grambling & Lincoln Parish. Reply STOP to unsubscribe, HELP for info.",
+        "Confirmed. You are now on the VotePlease list for Monday civic updates in Grambling & Lincoln Parish. Reply STOP to unsubscribe, HELP for info. Try asking: 'When is the next Grambling city council meeting?'",
       );
     } else if (keyword === "help") {
       twiml.message(
-        "VotePlease sends a weekly civic digest for Grambling, LA and can answer local civic questions by text. Reply START to join updates or STOP to opt out.",
+        "VotePlease sends a weekly civic digest for Grambling, LA and can answer local civic questions by text. Example questions: 'How do I register to vote in Lincoln Parish?', 'When is early voting?', 'What is on the local ballot?' Reply START to join updates or STOP to opt out.",
       );
     } else {
       if (!user) {
         twiml.message(
-          "Welcome to VotePlease. Reply START, YES, or CONFIRM to join Monday civic updates for Grambling, LA. Reply STOP to opt out.",
+          "Welcome to VotePlease. Reply START, YES, or CONFIRM to join Monday civic updates for Grambling, LA. You can also ask: 'Where is my polling place?' or 'When is the next election?' Reply STOP to opt out.",
         );
       } else if (user.subscribed === 0) {
         twiml.message("You are unsubscribed. Reply START to re-subscribe.");
