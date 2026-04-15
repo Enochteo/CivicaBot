@@ -13,6 +13,7 @@ import {
   clearOldHistory,
 } from "../db/index.js";
 import { scrapeAll } from "../scrapers/index.js";
+import { buildGramblingReferenceContext } from "./referenceFacts.js";
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -29,7 +30,9 @@ Rules:
 - For weekly digests, aim for 600–900 characters total.
 - Always encourage civic participation — voting, attending meetings, getting involved.
 - Prioritize answering from the provided civic context when available.
+- Prioritize stable Grambling reference facts for questions about the mayor, city hall, offices, phone numbers, and government basics.
 - Never invent facts or dates. Only summarize what you've been given.
+- If the answer is not in the reference facts or current civic context, say you don't know and suggest the official City of Grambling website or city hall.
 - If a user asks to STOP or UNSUBSCRIBE, confirm they've been removed.
 - If a user asks to START or SUBSCRIBE, confirm they've been added.
 - Do not respond to over-generic questions rather give examples of questions a user can ask in your first response and whenever the user asks anything outside of your tasks.
@@ -220,6 +223,7 @@ Skip promotional content or opinions`;
 export async function handleUserMessage(userPhone, message) {
   // Retrieve recent conversation history (last 10 exchanges = 20 messages)
   const history = await getConversationHistory(userPhone, 20);
+  const referenceContext = buildGramblingReferenceContext();
   const civicContextItems = await getFreshCivicContext();
   const civicContext = buildChatContext(civicContextItems);
 
@@ -227,7 +231,11 @@ export async function handleUserMessage(userPhone, message) {
   const messages = [
     {
       role: "system",
-      content: `Current civic context (use this first, and keep answers practical):\n${civicContext}`,
+      content: `Stable Grambling reference facts (use this first for leadership, contact info, and government basics):\n${referenceContext}`,
+    },
+    {
+      role: "system",
+      content: `Current civic context (news and announcements; use after the reference facts):\n${civicContext}`,
     },
     ...history,
     { role: "user", content: message },
